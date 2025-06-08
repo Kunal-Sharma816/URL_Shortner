@@ -29,8 +29,8 @@ app.use("/api/create", shortUrl);
 app.use("/api/user", userRoutes)
 
 app.get("/:id", redirectFromShortUrl);
-
-app.listen(5000, () => {
+const  port = process.env.PORT || 5000;
+app.listen(port, () => {
   coonnectDB();
   console.log("Sever is running on http://localhost:5000");
 });
