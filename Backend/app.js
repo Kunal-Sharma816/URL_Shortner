@@ -14,7 +14,7 @@ import userRoutes from "./src/routes/user.routes.js"
 const app = express();
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://url-shortner-inky-five.vercel.app'],
+  origin: ['https://url-shortner-inky-five.vercel.app'],
   credentials: true
 }));
 
