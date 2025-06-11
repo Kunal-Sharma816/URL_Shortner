@@ -3,7 +3,7 @@ import { wrapAsync } from "../utils/errorHandler.js"
 import dotenv from 'dotenv';
 dotenv.config();
 
-const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
+const BASE_URL = process.env.APP_URL || "http://localhost:5000";
 
 export const getAllUserUrls = wrapAsync(async (req, res) => {
   const { _id } = req.user;
