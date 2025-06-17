@@ -9,7 +9,7 @@ const Navbar = ({ isLoggedIn, userName, onLogout }) => {
         {/* Leftmost App Name */}
         <div className="w-1/3">
           <Link to="/" className="text-xl font-bold text-blue-600 hover:text-blue-800">
-            URL-Shortner
+            Linkly
           </Link>
         </div>
 
