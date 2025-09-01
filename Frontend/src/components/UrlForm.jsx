@@ -5,29 +5,35 @@ import { useSelector } from "react-redux";
 
 const UrlForm = () => {
   const [url, setUrl] = useState("");
-  const [shortUrl, setShortUrl] = useState(null);
+  const [shortUrl, setShortUrl] = useState(null);     // backend actual link
+  const [demoUrl, setDemoUrl] = useState(null);       // demo/expected link
   const [copied, setCopied] = useState(false);
   const [customSlug, setCustomSlug] = useState("");
-  const [error, setError] = useState(null); // ❗️ error state
+  const [error, setError] = useState(null);
+
   const queryClient = useQueryClient();
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   const handleSubmit = async () => {
-    setError(null); // Reset error on each submit
+    setError(null);
 
     try {
       const data = await createShortUrl(url, customSlug);
-      console.log("check", data)
+      console.log("API Response:", data);
+
+      // set actual backend shortened link
       setShortUrl(data.short_url_);
-      console.log("u",shortUrl);
+
+      // set demo/pretty link (replace base with "Linkly")
+      setDemoUrl(replaceBackendLink(data.short_url_));
+
       setCopied(false);
       setUrl("");
       setCustomSlug("");
-      queryClient.invalidateQueries(["userUrls"]); // ❗️ Refetch user URL list
+      queryClient.invalidateQueries(["userUrls"]);
     } catch (err) {
-      // Handle backend error
       if (err?.response?.data?.message) {
-        setError(err.response.data.message); // e.g., "Slug already in use"
+        setError(err.response.data.message);
       } else {
         setError("Failed to shorten the URL. Try again.");
       }
@@ -36,10 +42,10 @@ const UrlForm = () => {
   };
 
   const handleCopy = () => {
-    if (!shortUrl?.short_url) return;
+    if (!shortUrl) return;
 
     navigator.clipboard
-      .writeText(shortUrl.short_url)
+      .writeText(shortUrl)
       .then(() => setCopied(true))
       .catch((err) => {
         console.error("Failed to copy:", err);
@@ -47,10 +53,18 @@ const UrlForm = () => {
       });
   };
 
+  // regex replace to show pretty link
+  function replaceBackendLink(codeString) {
+    const replaceWith = "Linkly";
+    return codeString.replace(/localhost:5000/,"Linkly");
+  }
+
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 bg-gray-50">
       <div className="w-full max-w-2xl bg-white shadow-xl rounded-xl p-8 space-y-6">
-        <h2 className="text-2xl font-bold text-center text-gray-800">Create a Short URL</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800">
+          Create a Short URL
+        </h2>
 
         {/* ❗️ Show error message */}
         {error && (
@@ -61,7 +75,10 @@ const UrlForm = () => {
 
         {/* URL input */}
         <div>
-          <label htmlFor="url-input" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="url-input"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Long URL
           </label>
           <input
@@ -78,8 +95,12 @@ const UrlForm = () => {
         {/* Custom slug for authenticated users */}
         {isAuthenticated && (
           <div>
-            <label htmlFor="customSlug" className="block text-sm font-medium text-gray-700 mb-1">
-              Custom Slug <span className="text-gray-400 text-xs">(Optional)</span>
+            <label
+              htmlFor="customSlug"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Custom Slug{" "}
+              <span className="text-gray-400 text-xs">(Optional)</span>
             </label>
             <div className="relative">
               <input
@@ -95,7 +116,8 @@ const UrlForm = () => {
               </div>
             </div>
             <p className="mt-1 text-xs text-gray-500">
-              You can define a custom slug like <strong>my-link</strong> (e.g., yourdomain.com/my-link).
+              You can define a custom slug like <strong>my-link</strong>{" "}
+              (e.g., yourdomain.com/my-link).
             </p>
           </div>
         )}
@@ -109,24 +131,44 @@ const UrlForm = () => {
           Shorten URL
         </button>
 
-        {/* Short URL display and copy */}
+        {/* Short URL display */}
         {shortUrl && (
-          <div className="mt-4 bg-gray-100 p-4 rounded-xl text-center space-y-2">
-            <p className="text-gray-700 font-semibold">Shortened URL:</p>
-            <a
-              href={shortUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 underline break-all block text-sm"
-            >
-              {shortUrl}
-            </a>
-            <button
-              onClick={handleCopy}
-              className="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm transition"
-            >
-              {copied ? "Copied!" : "Copy"}
-            </button>
+          <div className="mt-4 bg-gray-100 p-4 rounded-xl space-y-3">
+            <p className="text-gray-700 font-semibold text-center">
+              Your Shortened Link
+            </p>
+
+            {/* Pretty/demo link */}
+            <div className="bg-white p-3 rounded-lg shadow flex flex-col items-center">
+              <span className="text-gray-500 text-xs">Demo Link</span>
+              <a
+                href={shortUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline break-all block text-sm font-medium"
+              >
+                {demoUrl}
+              </a>
+            </div>
+
+            {/* Actual backend link */}
+            <div className="bg-white p-3 rounded-lg shadow flex flex-col items-center">
+              <span className="text-gray-500 text-xs">Actual Link</span>
+              <a
+                href={shortUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-700 break-all block text-xs"
+              >
+                {shortUrl}
+              </a>
+              <button
+                onClick={handleCopy}
+                className="mt-2 inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-xl text-sm transition"
+              >
+                {copied ? "Copied!" : "Copy"}
+              </button>
+            </div>
           </div>
         )}
       </div>
