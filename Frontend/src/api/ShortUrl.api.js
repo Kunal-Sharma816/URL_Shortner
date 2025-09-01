@@ -4,7 +4,7 @@ export const createShortUrl = async (url, customSlug) => {
   const payload = { url };
 
   if (customSlug) {
-    payload.slug = customSlug; // ✅ Use "slug" to match backend
+    payload.slug = customSlug; 
   }
 
   const { data } = await axiosInstance.post("/api/create", payload);

@@ -8,7 +8,7 @@ export const findUserByEmail = async (email)=>
 
 export const findUserByEmailAndPassword = async (email)=>
 {
-    return await User.findOne(email).select("+password")
+    return await User.findOne(email).select(" + password")
 }
 
 export const findUserById = async (id)=>{
@@ -24,5 +24,5 @@ export const createUser = async (name , email , password)=>{
 
 export const getAllUrls = async (id)=>
 {
-    return await shortUrl.find({user:id})
+    return await shortUrl.find({user: id})
 }

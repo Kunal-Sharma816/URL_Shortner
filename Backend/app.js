@@ -14,7 +14,7 @@ import userRoutes from "./src/routes/user.routes.js"
 const app = express();
 
 app.use(cors({
-  origin: ['https://url-shortner-hcijtrcim-kunal-sharma816s-projects.vercel.app'],
+  origin: ['https://url-shortner-hcijtrcim-kunal-sharma816s-projects.vercel.app', 'http://localhost:5174'],
   credentials: true
 }));
 

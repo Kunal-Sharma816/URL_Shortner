@@ -16,9 +16,8 @@ export const findUrlFromShortUrl = (id)=>
     return urlSchema.findOneAndUpdate({ short_url: id } , {$inc:{clicks:1}});
 }
 
-export const getCustomUrl = async(slug)=>
+export const getCustomUrl = async (slug)=>
 {
-  return await urlSchema.findOne({shortUrl: slug})
-
+  return await urlSchema.findOne({short_url: slug})
 }
 

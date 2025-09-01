@@ -35,7 +35,8 @@ export const createShortUrl = wrapAsync(async (req, res) => {
     
 
     // Send back the result
-    return res.status(200).json({short_url: process.env.APP_URL + short_url});
+    return res.status(200).json({"short_url_": process.env.APP_URL + short_url});
+
   } catch (error) {
     console.error("Error in createShortUrl controller:", error.message);
     if (error.message === "The custom URL already exists") {

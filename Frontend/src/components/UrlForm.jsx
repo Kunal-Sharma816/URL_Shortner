@@ -17,8 +17,9 @@ const UrlForm = () => {
 
     try {
       const data = await createShortUrl(url, customSlug);
-
-      setShortUrl(data);
+      console.log("check", data)
+      setShortUrl(data.short_url_);
+      console.log("u",shortUrl);
       setCopied(false);
       setUrl("");
       setCustomSlug("");
@@ -109,16 +110,16 @@ const UrlForm = () => {
         </button>
 
         {/* Short URL display and copy */}
-        {shortUrl?.short_url && (
+        {shortUrl && (
           <div className="mt-4 bg-gray-100 p-4 rounded-xl text-center space-y-2">
             <p className="text-gray-700 font-semibold">Shortened URL:</p>
             <a
-              href={shortUrl.short_url}
+              href={shortUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 underline break-all block text-sm"
             >
-              {shortUrl.short_url}
+              {shortUrl}
             </a>
             <button
               onClick={handleCopy}

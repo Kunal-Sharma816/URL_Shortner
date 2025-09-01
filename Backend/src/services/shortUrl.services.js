@@ -29,6 +29,7 @@ export const createShortUrlWithUser = async (url, userId, slug = null) => {
     await saveShortUrl(shortUrl, url, userId);
 
     return shortUrl;
+    
   } catch (error) {
     // Handle MongoDB duplicate key error
     if (error.code === 11000 && error.keyPattern && error.keyPattern.short_url) {
